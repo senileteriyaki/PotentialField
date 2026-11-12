@@ -3,7 +3,7 @@ package frc.robot.application.potentialAuto
 import edu.wpi.first.math.geometry.Translation2d;
 
 public class PotentialField{ //represents a scalar potential field U, with force being -grad F
-	
+		
 	public interface Obstacle {
 		double getPotential(
 			Translation2d position,
@@ -12,7 +12,7 @@ public class PotentialField{ //represents a scalar potential field U, with force
 
 	public static class CircularObstacle implements Obstacle {
 		private Translation2d center;
-		private double strength;
+		private double strength; //so that negative strength is attractive
 		private double actionDistance;
 		private double radius;
 
@@ -29,7 +29,18 @@ public class PotentialField{ //represents a scalar potential field U, with force
 				return 0;
 			}
 			
-			return strength * Math.pow(distance - dist, 2);
+			return strength * Math.pow(actionDistance - dist, 2);
+		}
+	}
+
+	public static class LinearObstacle implements Obstacle {
+		private Translation2d start;
+		private Translation2d end;
+		private double strength; 
+		private double actionDistance;
+
+		public double getPotential(Translation2d position) {
+			double dist = position
 		}
 	}
 
