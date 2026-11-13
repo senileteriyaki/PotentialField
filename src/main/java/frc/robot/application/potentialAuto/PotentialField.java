@@ -1,12 +1,16 @@
-package frc.robot.application.potentialAuto
+package frc.robot.application.potentialAuto;
 
 import edu.wpi.first.math.geometry.Translation2d;
+import java.util.ArrayList;
+import java.util.List;
+import frc.robot.util.Util;
+
 
 public class PotentialField{ //represents a scalar potential field U, with force being -grad F
 		
 	public interface Obstacle {
 		double getPotential(
-			Translation2d position,
+			Translation2d position
 		);
 	}
 
@@ -19,7 +23,7 @@ public class PotentialField{ //represents a scalar potential field U, with force
 		public CircularObstacle(Translation2d center, double strength, double actionDistance, double radius) {
 			this.center = center;
 			this.radius = radius;
-			this.actionDistance = distance;
+			this.actionDistance = actionDistance;
 			this.strength = strength;
 		}
 
@@ -40,14 +44,18 @@ public class PotentialField{ //represents a scalar potential field U, with force
 		private double actionDistance;
 
 		public double getPotential(Translation2d position) {
-			double dist = position
+			double dist = Math.sqrt(Util.squaredDistanceToSegment(start, end, position));
+			if (dist >= actionDistance) {
+				return 0;
+			}
+			return strength * Math.pow(actionDistance - dist, 2);
 		}
 	}
 
 	private List<Obstacle> obstacles;
-	private boolean multiplier;
+	private double multiplier;
 	public PotentialField(double k) {
-		obstacles = new ArrayList<Obstacle>;
+		obstacles = new ArrayList<Obstacle>();
 		multiplier = k;
 	}
 
@@ -56,21 +64,19 @@ public class PotentialField{ //represents a scalar potential field U, with force
 	}
 
 	public double getTotalPotential(Translation2d position) {
-		u = 0;
-		for (obstacle : obstacles) {
+		double u = 0;
+		for (Obstacle obstacle : obstacles) {
 			u += obstacle.getPotential(position);
 		}
 		return u;
 	}
 	
-	public Translation2D calculateForce(Translation2d position, double h) {
-		x = position.getX();
-		y = position.getY(); 
-		partialUx = (getTotalPotential(new Translation2d(x + h, y)) - getTotalPotential(new Translation2d(x - h, y))) * (1/(2*h));
-		partialUy = (getTotalPotential(new Translation2d(x, y + h)) - getTotalPotential(new Translation2d(x, y - h))) * (1/(2*h));
+	public Translation2d calculateForce(Translation2d position, double h) {
+		double x = position.getX();
+		double y = position.getY(); 
+		double partialUx = (getTotalPotential(new Translation2d(x + h, y)) - getTotalPotential(new Translation2d(x - h, y))) * (1/(2*h));
+		double partialUy = (getTotalPotential(new Translation2d(x, y + h)) - getTotalPotential(new Translation2d(x, y - h))) * (1/(2*h));
 		return new Translation2d(partialUx*multiplier, partialUy*multiplier);
 	}
 }
 
-
-}

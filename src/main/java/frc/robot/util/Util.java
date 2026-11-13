@@ -1,5 +1,5 @@
 package frc.robot.util;
-
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Translation2d;
 
 /** Contains some basic utility functions that are used often. */
@@ -249,5 +249,22 @@ public class Util {
 
     public static double gaussian(double x, double stdev){
         return Math.exp(-sq(x) / (2.0 * sq(stdev)));
+    }
+    
+    /**
+     * Returns the distance from position to the line segment from start to end(and in particular not the extended line).
+     *
+     * @param start
+     * @param end
+     * @param position
+     * @return the squared distance from position to the segment from start to end.
+     *
+     */ 
+    public static double squaredDistanceToSegment(Translation2d start, Translation2d end, Translation2d position) {
+        Translation2d b = end.minus(start);
+        Translation2d x = position.minus(start);
+        double multiplier = x.dot(b)/b.dot(b);
+        Translation2d projection = b.times(MathUtil.clamp(multiplier, 0, 1)); 
+        return x.getSquaredDistance(projection);
     }
 }
