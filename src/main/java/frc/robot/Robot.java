@@ -60,8 +60,8 @@ public class Robot extends LoggedRobot {
     private ObstacleAvoidance obstacles;
     private SS superstructure;
     private Controls controls;
-    private AutoSelector autoSelector;
-    private Auto auto;
+    //private AutoSelector autoSelector;
+    //private Auto auto;
 
 
     @Override
@@ -135,9 +135,9 @@ public class Robot extends LoggedRobot {
         if (!DriverStation.isAutonomous()) {
             controls.update();
         }
-        if (DriverStation.isAutonomous() && auto != null) {
-            auto.periodic();
-        }
+        //if (DriverStation.isAutonomous() && auto != null) {
+            //auto.periodic();
+        //}
         superstructure.periodic();
         elevator.periodic();
         arm.periodic();
@@ -160,9 +160,9 @@ public class Robot extends LoggedRobot {
 
     @Override
     public void disabledPeriodic() {
-        autoSelector.periodic();
+        //autoSelector.periodic();
         if (OI.DR.getAButtonPressed()) {
-            autoSelector.nextAuto();
+            //autoSelector.nextAuto();
         }
     }
 
@@ -171,8 +171,8 @@ public class Robot extends LoggedRobot {
         // A simulated camera may still have an observation from the pre-auto pose. Keep that
         // measurement out of the estimator while Auto establishes the selected start pose.
         vision.disable();
-        auto = new Auto(autoSelector.getSelected());
-        auto.start();
+        //auto = new Auto(autoSelector.getSelected());
+        //auto.start();
         vision.resetPose(drive.getPose());
         // Photon sim is currently driven from Drive's estimated pose. Fusing those delayed
         // observations back into the same estimator creates a feedback loop that moves and spins
@@ -223,7 +223,7 @@ public class Robot extends LoggedRobot {
         superstructure = SS.getInstance();
         controls = new ArmControls(arm);
         // controls = new ControlScheme(superstructure, drive);
-        autoSelector = new AutoSelector();
+        //autoSelector = new AutoSelector();
     }
 
 }
