@@ -8,16 +8,18 @@ import edu.wpi.first.math.geometry.Translation2d;
 
 import frc.robot.application.potentialAuto.PotentialField.CircularObstacle;
 import frc.robot.application.potentialAuto.PotentialField.GoalPotential;
+import frc.robot.application.potentialAuto.PotentialField.LinearObstacle;
 
 /** Holds selectable autonomous routines. */
-public class AutoSelector {
+public class PotentialAutoSelector {
     private final ArrayList<PotentialField> routines = new ArrayList<>(); // this should really be a separate class with a potential field + superstructure actions
     private int index;
 
-    public AutoSelector() {
+    public PotentialAutoSelector() {
         PotentialField testField = new PotentialField(1);
         testField.add(new CircularObstacle(new Translation2d(1, 1), 1, 0.5, 0.2));
         testField.add(new GoalPotential(new Translation2d(5, 5), 1, 1));
+        testField.add(new LinearObstacle(new Translation2d(10, 5), new Translation2d(10, 9), 1.0, 3.0));
         routines.add(testField);
     }
 
@@ -31,4 +33,5 @@ public class AutoSelector {
         Logger.recordOutput("Elastic/Selected Auto/Index", index);
         //Logger.recordOutput("Elastic/Selected Auto/Start", selected.getStartDescription());
     }
+    
 }

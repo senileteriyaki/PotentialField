@@ -66,6 +66,13 @@ public class PotentialField{ //represents a scalar potential field U, with force
 		private double strength; 
 		private double actionDistance;
 
+		public LinearObstacle(Translation2d start, Translation2d end, double strength, double actionDistance) {
+			this.start = start;
+			this.end = end;
+			this.strength = strength;
+			this.actionDistance = actionDistance;
+		}
+
 		public double getPotential(Translation2d position) {
 			double dist = Math.sqrt(Util.squaredDistanceToSegment(start, end, position));
 			if (dist >= actionDistance) {

@@ -20,6 +20,8 @@ import edu.wpi.first.wpilibj.Threads;
 import edu.wpi.first.wpilibj.DriverStation;
 import frc.robot.application.auto.Auto;
 import frc.robot.application.auto.AutoSelector;
+import frc.robot.application.potentialAuto.PotentialAuto;
+import frc.robot.application.potentialAuto.PotentialAutoSelector;
 import frc.robot.application.superstructure.SS;
 import frc.robot.constants.BuildConstants;
 import frc.robot.constants.Constants;
@@ -62,6 +64,8 @@ public class Robot extends LoggedRobot {
     private Controls controls;
     //private AutoSelector autoSelector;
     //private Auto auto;
+    private PotentialAuto auto;
+    private PotentialAutoSelector autoSelector;
 
 
     @Override
@@ -138,6 +142,10 @@ public class Robot extends LoggedRobot {
         //if (DriverStation.isAutonomous() && auto != null) {
             //auto.periodic();
         //}
+
+        if (DriverStation.isAutonomous() && auto != null) {
+            auto.periodic();
+        }
         superstructure.periodic();
         elevator.periodic();
         arm.periodic();
@@ -163,6 +171,7 @@ public class Robot extends LoggedRobot {
         //autoSelector.periodic();
         if (OI.DR.getAButtonPressed()) {
             //autoSelector.nextAuto();
+            autoSelector.nextAuto();
         }
     }
 
@@ -173,6 +182,8 @@ public class Robot extends LoggedRobot {
         vision.disable();
         //auto = new Auto(autoSelector.getSelected());
         //auto.start();
+        auto = new PotentialAuto(autoSelector.getSelected());
+        auto.start();
         vision.resetPose(drive.getPose());
         // Photon sim is currently driven from Drive's estimated pose. Fusing those delayed
         // observations back into the same estimator creates a feedback loop that moves and spins
@@ -224,6 +235,7 @@ public class Robot extends LoggedRobot {
         controls = new ArmControls(arm);
         // controls = new ControlScheme(superstructure, drive);
         //autoSelector = new AutoSelector();
+        autoSelector = new PotentialAutoSelector();
     }
 
 }

@@ -4,6 +4,5 @@ public enum PotentialAutoState {
     DISABLED,
     IDLE,
     DRIVE,
-    WAIT,
     FINISHED
 }
