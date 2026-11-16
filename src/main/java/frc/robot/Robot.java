@@ -149,7 +149,7 @@ public class Robot extends LoggedRobot {
         superstructure.periodic();
         elevator.periodic();
         arm.periodic();
-        obstacles.periodic();
+        //obstacles.periodic();
         tracking.periodic();
         drive.periodic();
         vision.periodic();

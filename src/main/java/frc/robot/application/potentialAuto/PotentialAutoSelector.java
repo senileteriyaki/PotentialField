@@ -17,9 +17,9 @@ public class PotentialAutoSelector {
 
     public PotentialAutoSelector() {
         PotentialField testField = new PotentialField(1);
-        testField.add(new CircularObstacle(new Translation2d(1, 1), 1, 0.5, 0.2));
-        testField.add(new GoalPotential(new Translation2d(5, 5), 1, 1));
-        testField.add(new LinearObstacle(new Translation2d(10, 5), new Translation2d(10, 9), 1.0, 3.0));
+        testField.add(new GoalPotential(new Translation2d(7, 7), 1, 3));
+        testField.add(new CircularObstacle(new Translation2d(4.5, 4), 2, 1,1));
+        testField.add(new LinearObstacle(new Translation2d(3.5, 3.5), new Translation2d(2, 2), 0.5, 1));
         routines.add(testField);
     }
 

@@ -43,7 +43,7 @@ public class PotentialField{ //represents a scalar potential field U, with force
 		private double actionDistance;
 		private double radius;
 
-		public CircularObstacle(Translation2d center, double strength, double actionDistance, double radius) {
+		public CircularObstacle(Translation2d center, double radius, double actionDistance, double strength) {
 			this.center = center;
 			this.radius = radius;
 			this.actionDistance = actionDistance;
@@ -107,6 +107,10 @@ public class PotentialField{ //represents a scalar potential field U, with force
 		double partialUx = (getTotalPotential(new Translation2d(x + h, y)) - getTotalPotential(new Translation2d(x - h, y))) * (1/(2*h));
 		double partialUy = (getTotalPotential(new Translation2d(x, y + h)) - getTotalPotential(new Translation2d(x, y - h))) * (1/(2*h));
 		return new Translation2d(-partialUx*multiplier, -partialUy*multiplier);
+	}
+
+	public Translation2d calculateForce(Translation2d position) {
+		return calculateForce(position, 0.01);
 	}
 
 	public Pose2d[] getForceArrows(double fieldLength, double fieldWidth, double spacing, double h) {

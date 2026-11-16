@@ -318,7 +318,7 @@ public class Drive extends SubsystemBase<PathingMode> {
 
         // Last thing before we command the modules: let obstacle avoidance cap the speed so the robot
         // can always brake before a wall. It only ever slows us down.
-        outputSpeeds = ObstacleAvoidance.getInstance().constrain(getPose(), outputSpeeds);
+        //outputSpeeds = ObstacleAvoidance.getInstance().constrain(getPose(), outputSpeeds);
 
         // Log speeds and accelerations
         Logger.recordOutput("Drive/Speeds/Input", new ChassisSpeeds(si.xi, si.yi, si.wi));
