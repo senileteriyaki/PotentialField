@@ -16,10 +16,10 @@ public class PotentialAutoSelector {
     private int index;
 
     public PotentialAutoSelector() {
-        PotentialField testField = new PotentialField(1);
+        PotentialField testField = new PotentialField(1, new Translation2d(7, 7));
         testField.add(new GoalPotential(new Translation2d(7, 7), 1, 3));
-        testField.add(new CircularObstacle(new Translation2d(4.5, 4), 2, 1,1));
-        testField.add(new LinearObstacle(new Translation2d(3.5, 3.5), new Translation2d(2, 2), 0.5, 1));
+        testField.add(new CircularObstacle(new Translation2d(4.5, 4), 1.5, 1,2));
+        testField.add(new LinearObstacle(new Translation2d(3.5, 3.5), new Translation2d(2, 2), 1, 1));
         routines.add(testField);
     }
 
