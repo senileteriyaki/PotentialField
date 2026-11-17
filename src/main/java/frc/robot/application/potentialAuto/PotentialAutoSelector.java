@@ -18,14 +18,12 @@ public class PotentialAutoSelector {
 
     public PotentialAutoSelector() {
         PotentialField testField = new PotentialField(1, new Translation2d(7, 7), 3);
-        testField.add(new GoalPotential(new Translation2d(7, 7), 1, 3));
         testField.add(new CircularObstacle(new Translation2d(4.5, 4), 1.5, 1,2));
         testField.add(new LineSegmentObstacle(new Translation2d(3.5, 3.5), new Translation2d(2, 2), 2, 1));
         testField.add(new LinearObstacle(new Translation2d(8, 8), new Translation2d(8, 0), 3, 3));
         routines.add(testField);
 
         PotentialField simpleField = new PotentialField(1, new Translation2d(3, 4), 2);
-        simpleField.add(new GoalPotential(new Translation2d(3, 4), 1, 3));
         routines.add(simpleField);
     }
 

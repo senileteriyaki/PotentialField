@@ -218,6 +218,7 @@ public class PotentialField { // represents a scalar potential field U, with for
 	private List<Potential> potentials;
 	private double multiplier;
 	private Translation2d goal;
+	private GoalPotential goalPotential;
 	private double maxVelocity_mps;
 
 	public PotentialField(double k, Translation2d goal, double maxVelocity_mps) {
@@ -225,6 +226,7 @@ public class PotentialField { // represents a scalar potential field U, with for
 		multiplier = k;
 		this.goal = goal;
 		this.maxVelocity_mps = maxVelocity_mps;
+		goalPotential = new GoalPotential(goal, 1, 3);
 	}
 	
 	public void add(Potential p) {
@@ -233,6 +235,10 @@ public class PotentialField { // represents a scalar potential field U, with for
 
 	public Translation2d getGoal() {
 		return goal;
+	}
+
+	public void changeGoal(Translation2d newGoal) {
+		goal = newGoal;
 	}
 
 	public double getMaxVelocity() {
@@ -244,6 +250,7 @@ public class PotentialField { // represents a scalar potential field U, with for
 		for (Potential potential : potentials) {
 			u += potential.getPotential(position, goal);
 		}
+		u += goalPotential.getPotential(position, goal);
 		return u;
 	}
 

@@ -49,7 +49,8 @@ public class PotentialAuto extends SubsystemBase<PotentialAutoState>{
         double step_size = 0.5;
         Pose2d robotPose = drive.getPose();
         Translation2d force = field.calculateForce(robotPose.getTranslation());
-        force = force.div(force.getNorm());
+        double norm = force.getNorm();
+        force = force.div(norm);
         double distanceToGoal = robotPose.getTranslation().getDistance(field.getGoal());
         if (distanceToGoal < slowdownDistance_m) {
             step_size *= distanceToGoal / slowdownDistance_m;
@@ -57,29 +58,6 @@ public class PotentialAuto extends SubsystemBase<PotentialAutoState>{
         Translation2d targetTranslation = robotPose.getTranslation().plus(force.times(step_size));
         Pose2d target = new Pose2d(targetTranslation, robotPose.getRotation());
         drive.setTargetPose(target, field.getMaxVelocity(), translation_kP, rotation_kP, true);
-    }
-
-    public void handleDriveOld() {
-        drive.setCommand(PathingMode.FIELD_RELATIVE);
-        ChassisSpeeds measuredRobot = drive.getChassisSpeeds();
-        ChassisSpeeds measuredField = ChassisSpeeds.fromRobotRelativeSpeeds(measuredRobot, drive.getRotation());
-        Pose2d robotPose = drive.getPose();
-        Translation2d acceleration = field.calculateForce(robotPose.getTranslation());
-        acceleration = acceleration.minus(new Translation2d(measuredField.vxMetersPerSecond, measuredField.vyMetersPerSecond).times(damping));
-        if (acceleration.getNorm() > maxAccel_ms2) {
-            acceleration = acceleration.times(maxAccel_ms2 / acceleration.getNorm());
-        }
-        commandedFieldVelocity = commandedFieldVelocity.plus(acceleration.times(Constants.globalDelta_s));
-        double vx = commandedFieldVelocity.getX();
-        double vy = commandedFieldVelocity.getY();
-        if (Constants.isRedAlliance()) {
-            vx = -vx;
-            vy = -vy;
-        }
-        SwerveInput input = new SwerveInput(vx/Drive.MAX_LINEAR_VEL_mps, vy/Drive.MAX_LINEAR_VEL_mps, 0, 0.8);
-        drive.setInput(input);
-        Logger.recordOutput("PotentialAuto/CommandedVelocity", commandedFieldVelocity);
-        Logger.recordOutput("PotentialAuto/Acceleration", field.calculateForce(robotPose.getTranslation()));
     }
 
 
