@@ -3,6 +3,7 @@ package frc.robot.application.potentialAuto;
 import org.littletonrobotics.junction.Logger;
 
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import frc.robot.constants.Constants;
@@ -18,11 +19,13 @@ public class PotentialAuto extends SubsystemBase<PotentialAutoState>{
     private Translation2d commandedFieldVelocity = Translation2d.kZero;
     private final double damping = 0.7;
     private final double maxAccel_ms2 = 1.0;
+    private final double slowdownDistance_m = 1;
+    private final double translation_kP = 2.5;
+    private final double rotation_kP = 0.2;
     
     public PotentialAuto(PotentialField field) {
         super("PotentialAuto");
         this.field = field;
-        this.forceArrows = field.getForceArrows(Constants.FIELD_LENGTH_M, Constants.FIELD_WIDTH_M, 0.3, 0.01);
         setCommand(PotentialAutoState.IDLE);
     }
 
@@ -42,6 +45,21 @@ public class PotentialAuto extends SubsystemBase<PotentialAutoState>{
     }
 
     public void handleDrive() {
+        drive.setCommand(PathingMode.POSE_FOLLOWING);
+        double step_size = 0.5;
+        Pose2d robotPose = drive.getPose();
+        Translation2d force = field.calculateForce(robotPose.getTranslation());
+        force = force.div(force.getNorm());
+        double distanceToGoal = robotPose.getTranslation().getDistance(field.getGoal());
+        if (distanceToGoal < slowdownDistance_m) {
+            step_size *= distanceToGoal / slowdownDistance_m;
+        }
+        Translation2d targetTranslation = robotPose.getTranslation().plus(force.times(step_size));
+        Pose2d target = new Pose2d(targetTranslation, robotPose.getRotation());
+        drive.setTargetPose(target, field.getMaxVelocity(), translation_kP, rotation_kP, true);
+    }
+
+    public void handleDriveOld() {
         drive.setCommand(PathingMode.FIELD_RELATIVE);
         ChassisSpeeds measuredRobot = drive.getChassisSpeeds();
         ChassisSpeeds measuredField = ChassisSpeeds.fromRobotRelativeSpeeds(measuredRobot, drive.getRotation());
@@ -69,7 +87,8 @@ public class PotentialAuto extends SubsystemBase<PotentialAutoState>{
         ChassisSpeeds measuredRobot = drive.getChassisSpeeds();
         ChassisSpeeds measuredField = ChassisSpeeds.fromRobotRelativeSpeeds(measuredRobot, drive.getRotation());
         commandedFieldVelocity = new Translation2d(measuredField.vxMetersPerSecond, measuredField.vyMetersPerSecond);
-        drive.setCommand(PathingMode.FIELD_RELATIVE);
+        this.forceArrows = field.getForceArrows(Constants.FIELD_LENGTH_M, Constants.FIELD_WIDTH_M, 0.3, 0.01);
+        drive.setCommand(PathingMode.POSE_FOLLOWING);
         setCommand(PotentialAutoState.DRIVE);
 
     }

@@ -59,6 +59,28 @@ public class PotentialField { // represents a scalar potential field U, with for
 		}
 	}
 
+	public static class LineSegmentObstacle implements Potential {
+		private Translation2d start;
+		private Translation2d end;
+		private double strength;
+		private double actionDistance;
+
+		public LineSegmentObstacle(Translation2d start, Translation2d end, double strength, double actionDistance) {
+			this.start = start;
+			this.end = end;
+			this.strength = strength;
+			this.actionDistance = actionDistance;
+		}
+
+		public double getPotential(Translation2d position, Translation2d goal) {
+			double dist = Math.sqrt(Util.squaredDistanceToSegment(start, end, position));
+			if (dist >= actionDistance) {
+				return 0;
+			}
+			return strength * Math.pow(actionDistance - dist, 2);
+		}
+	}
+
 	public static class LinearObstacle implements Potential {
 		private Translation2d start;
 		private Translation2d end;
@@ -73,8 +95,8 @@ public class PotentialField { // represents a scalar potential field U, with for
 		}
 
 		public double getPotential(Translation2d position, Translation2d goal) {
-			double dist = Math.sqrt(Util.squaredDistanceToSegment(start, end, position));
-			if (dist >= actionDistance) {
+			double dist = Math.sqrt(Util.squaredDistanceToSegmentNoEndpoint(start, end, position));
+			if (dist >= actionDistance || dist < 0) {
 				return 0;
 			}
 			return strength * Math.pow(actionDistance - dist, 2);
@@ -196,15 +218,25 @@ public class PotentialField { // represents a scalar potential field U, with for
 	private List<Potential> potentials;
 	private double multiplier;
 	private Translation2d goal;
+	private double maxVelocity_mps;
 
-	public PotentialField(double k, Translation2d goal) {
+	public PotentialField(double k, Translation2d goal, double maxVelocity_mps) {
 		potentials = new ArrayList<Potential>();
 		multiplier = k;
 		this.goal = goal;
+		this.maxVelocity_mps = maxVelocity_mps;
 	}
-
+	
 	public void add(Potential p) {
 		potentials.add(p);
+	}
+
+	public Translation2d getGoal() {
+		return goal;
+	}
+
+	public double getMaxVelocity() {
+		return maxVelocity_mps;
 	}
 
 	public double getTotalPotential(Translation2d position) {
@@ -237,7 +269,6 @@ public class PotentialField { // represents a scalar potential field U, with for
 
 		for (int i = 0; i <= nx; i++) {
 			for (int j = 0; j <= ny; j++) {
-
 				double x = Math.min(i * spacing, fieldLength);
 				double y = Math.min(j * spacing, fieldWidth);
 

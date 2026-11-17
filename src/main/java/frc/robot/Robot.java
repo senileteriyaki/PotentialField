@@ -170,9 +170,9 @@ public class Robot extends LoggedRobot {
     public void disabledPeriodic() {
         //autoSelector.periodic();
         if (OI.DR.getAButtonPressed()) {
-            //autoSelector.nextAuto();
             autoSelector.nextAuto();
         }
+        //autoSelector.nextAuto();
     }
 
     @Override

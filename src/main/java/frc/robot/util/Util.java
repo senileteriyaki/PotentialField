@@ -267,4 +267,25 @@ public class Util {
         Translation2d projection = b.times(MathUtil.clamp(multiplier, 0, 1)); 
         return x.getSquaredDistance(projection);
     }
+
+    /**
+     * Returns the distance from position to the line segment from start to end, or -1 if the projection
+     * of position onto the line defined by start and end is not within the segment.
+     *
+     * @param start
+     * @param end
+     * @param position
+     * @return the squared distance from position to the segment from start to end.
+     *
+     */ 
+    public static double squaredDistanceToSegmentNoEndpoint(Translation2d start, Translation2d end, Translation2d position) {
+        Translation2d b = end.minus(start);
+        Translation2d x = position.minus(start);
+        double multiplier = x.dot(b)/b.dot(b);
+        if(multiplier < 0 || multiplier > 1){
+            return -1;
+        }
+        Translation2d projection = b.times(multiplier); 
+        return x.getSquaredDistance(projection);
+    }
 }
