@@ -182,7 +182,7 @@ public class Robot extends LoggedRobot {
         vision.disable();
         //auto = new Auto(autoSelector.getSelected());
         //auto.start();
-        auto = new PotentialAuto(autoSelector.getSelected());
+        auto = new PotentialAuto(autoSelector.getSelectedField(), autoSelector.getSelectedActionList());
         auto.start();
         vision.resetPose(drive.getPose());
         // Photon sim is currently driven from Drive's estimated pose. Fusing those delayed
